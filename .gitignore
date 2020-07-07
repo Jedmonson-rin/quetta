@@ -1,0 +1,7 @@
+#google stuff
+credentials.json
+token.pickle
+
+#development stuff
+.vscode/
+__pycache__/
