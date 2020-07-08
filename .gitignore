@@ -5,3 +5,6 @@ token.pickle
 #development stuff
 .vscode/
 __pycache__/
+
+#personal data
+database.json
