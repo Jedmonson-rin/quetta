@@ -1,3 +1,5 @@
+import os
+
 from db_manage import DbManage
 from send_messages import SendMessages
 
@@ -6,13 +8,14 @@ class ProcessMessages:
         def __init__ (self):
             self.database = DbManage()
             self.send_message = SendMessages()
+            self.owner_email = os.environ.get('OWNER_EMAIL')
             
         def process(self, message_list):
             for message in message_list:
                 if self.check_user(message['from']):
                     if self.new_message(message['from'], message['id']):
-                        if self.shutdown_check(message['from'], message['snippit'])
-
+                        if self.shutdown_check(message['from'], message['message']):
+                            exit()
                         self.standard_message(message['from'])
                     return True
                 else:
@@ -40,4 +43,8 @@ class ProcessMessages:
             if self.database.new_message_id(email, message_id):
                 return True
 
-        def shutdown_check(self, email, message_id):
+        def shutdown_check(self, email, message):
+            if email == self.owner_email and "shutdown" in message:
+                print("sending shutdown confirmation")
+                self.send_message.shutdown_confirmation(self.owner_email)
+                return True

@@ -1,2 +1,0 @@
-[Quetta-Automated] Introduction
-Hello I'm Quetta, a Python bot using Google's Gmail API. You are now a registered user! If you would like to know more about what I can do, send another email with "help" in the body.

@@ -1,11 +1,20 @@
 import os
 import smtplib
+import json
 
 class SendMessages:
     def __init__(self):
         self.email_address = os.environ.get('QUETTA_EMAIL')
         self.email_password = os.environ.get('QUETTA_PASSWORD')
         self.owner_email = os.environ.get('OWNER_EMAIL')
+        self.responses = self.load_responses()
+
+    # load responses.json
+    def load_responses(self):
+        with open('responses.json', 'r') as j:
+            responses = json.load(j)
+        return responses
+
 
     # Initiate SMTP Connection
     def login(self, email, email_msg):
@@ -20,10 +29,8 @@ class SendMessages:
    # Send Standard Response
     def standard_resp(self, email):
         print("sending standard response.")
-        with open("responses/deprecated.txt", 'r') as d:
-            deprecated = d.read().split('\n')
-        email_subject = deprecated[0]
-        email_body = deprecated[1]
+        email_subject = self.responses['deprecated']['subject']
+        email_body = self.responses['deprecated']['body']
         email_msg = f'Subject: {email_subject}\n\n{email_body}'
         self.login(email, email_msg)
         print(f'deprecated message sent to: {email}')
@@ -31,20 +38,18 @@ class SendMessages:
     # Send New User Response
     def new_user_resp(self, email):
         print("sending NU resp.")
-        with open("responses/introduction.txt", 'r') as d:
-            introduction = d.read().split('\n')
-        email_subject = introduction[0]
-        email_body = introduction[1]
+        email_subject = self.responses['introduction']['subject']
+        email_body = self.responses['introduction']['body']
         email_msg = f'Subject: {email_subject}\n\n{email_body}'
         self.login(email, email_msg)
         print(f'introduction message sent to: {email}')
 
-    def shutdown_confirmation(self, message):
+    def shutdown_confirmation(self, email):
         if "shutdown" in message:
             print("sending shutdown confirmation")
-            email_subject = '[Automated-Message] Quetta-Shutdown'
-            email_body = 'Shutting down boss.'
+            email_subject = self.responses['shutdown']['subject']
+            email_body = self.responses['shutdown']['body']
             email_msg = f'Subject: {email_subject}\n\n{email_body}'
-            self.login(self.OWNER_EMAIL, email_msg)
-            print(f'message sent to: {self.OWNER_EMAIL}')
+            self.login(email, email_msg)
+            print(f'message sent to: {email}')
             return True

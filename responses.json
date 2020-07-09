@@ -1,0 +1,14 @@
+{
+    "introduction":{
+        "subject":"[Quetta-Automated] Introduction",
+        "body":"Hello! I'm Quetta, a Python bot using Google's Gmail API. You are now a registered user! If you would like to know more about what I can do, send another message with 'help' in the body."
+    },
+    "deprecated":{
+        "subject":"[Quetta-Automated] Deprecated",
+        "body":"Hello again, my features are still under development. Hopefully I can be of more use in the future. See you soon!"
+    },
+    "shutdown":{
+        "subject":"[Quetta-Automated] Shutdown",
+        "body": "Shutdown command received."
+    }
+}
