@@ -23,5 +23,6 @@ class DbManage:
             with self.connect:
                 self.cursor.execute("""UPDATE users SET last_message = :last_message WHERE email = :email""", {'email':email, 'last_message':message_id})
             return True
-        
 
+    def close_connection(self):
+        self.connect.close()

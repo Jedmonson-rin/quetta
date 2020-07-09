@@ -43,8 +43,10 @@ class ProcessMessages:
             if self.database.new_message_id(email, message_id):
                 return True
 
-        def shutdown_check(self, email, message):
-            if email == self.owner_email and "shutdown" in message:
+        def shutdown_check(self, email, body):
+            if email == self.owner_email and "shutdown" in body:
                 print("sending shutdown confirmation")
                 self.send_message.shutdown_confirmation(self.owner_email)
+                print("closing db connection")
+                self.database.close_connection()
                 return True
