@@ -5,6 +5,8 @@ token.pickle
 #development stuff
 .vscode/
 __pycache__/
+.pytest_cache
 
 #personal data
-database.json
+quetta.db
+quetta.db-journal
