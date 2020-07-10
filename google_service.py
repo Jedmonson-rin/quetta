@@ -10,7 +10,7 @@ from google.auth.transport.requests import Request
 
 class GoogleService:
     def __init__(self):
-        self.scope = ['https://mail.google.com/']
+        self.scopes = ['https://mail.google.com/']
         self.creds = None
 
     def service(self):
