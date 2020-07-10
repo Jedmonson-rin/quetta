@@ -5,12 +5,12 @@ from db_manage import DbManage
 from send_messages import SendMessages
 
 
-
 class ProcessMessages:
-        def __init__ (self):
+        def __init__ (self, google_service):
             self.database = DbManage()
-            self.send_message = SendMessages()
             self.owner_email = os.environ.get('OWNER_EMAIL')
+            self.email_address = os.environ.get('QUETTA_EMAIL')
+            self.send_message = SendMessages(google_service)
 
         def process(self, message_list):
             for message in message_list:
@@ -25,34 +25,33 @@ class ProcessMessages:
                     if self.add_user(message['from'], message['id']):
                         print("user added")
                         return True
-                    
-        def check_user(self, message):
-            if self.database.check_user(message):
+        
+        def new_message(self, email_from, message_id):
+            print("checking for new messages")
+            if self.database.new_message_id(email_from, message_id):
+                return True
+
+        def check_user(self, email_from):
+            if self.database.check_user(email_from):
                 return True
 
         # need to add whitelisting functionality
-        def add_user(self, email, message_id):
-            if self.database.add_user(email, message_id):
+        def add_user(self, email_from, message_id):
+            if self.database.add_user(email_from, message_id):
                 print("sending introduction message")
-                self.send_message.new_user_resp(email)
+                self.send_message.new_user_resp(email_from)
             return True
 
-        def standard_message(self, email):
-            self.send_message.standard_resp(email)
-
-        def new_message(self, email, message_id):
-            print("checking for new messages")
-            if self.database.new_message_id(email, message_id):
-                return True
+        def standard_message(self, email_from):
+            self.send_message.standard_resp(email_from)
+        
 
         def shutdown(self, email, body):
-                print("sending shutdown confirmation")
-                self.send_message.shutdown_confirmation(self.owner_email)
-                print("closing db connection")
-                self.database.close_connection()
+            self.send_message.shutdown_confirmation(self.owner_email)
+            print("closing db connection")
+            self.database.close_connection()
         
         def update(self):
-            print("updating, sending shutdown confirmation")
             self.send_message.update_confirmation(self.owner_email)
             print("closing db connection")
             self.database.close_connection()

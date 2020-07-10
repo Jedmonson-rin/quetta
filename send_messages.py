@@ -1,13 +1,13 @@
 import os
-import smtplib
 import json
+import base64
+from email.mime.text import MIMEText
 
 class SendMessages:
-    def __init__(self):
+    def __init__(self, google_service):
         self.email_address = os.environ.get('QUETTA_EMAIL')
-        self.email_password = os.environ.get('QUETTA_PASSWORD')
-        self.owner_email = os.environ.get('OWNER_EMAIL')
         self.responses = self.load_responses()
+        self.gs = google_service
 
     # load responses.json
     def load_responses(self):
@@ -15,47 +15,49 @@ class SendMessages:
             responses = json.load(j)
         return responses
 
+    # create message format for Gmail API
+    def create_message(self, email_to, email_subject, email_body):
+        message = MIMEText(email_body)
+        message['to'] = email_to
+        message['from'] = self.email_address
+        message['subject'] = email_subject
+        encoding = base64.urlsafe_b64encode(message.as_bytes())
+        message_string = encoding.decode()
+        return {'raw': message_string}
 
-    # Initiate SMTP Connection
-    def login(self, email, email_msg):
-        print("initiating SMTP connection.")
-        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-            smtp.ehlo()
-            smtp.starttls()
-            smtp.ehlo()
-            smtp.login(self.email_address, self.email_password)
-            smtp.sendmail(self.owner_email, email, email_msg)
+    # send message through Gmail API
+    def send_message(self, message):
+        if self.gs.send_message(message):
+            return True
 
    # Send Standard Response
-    def standard_resp(self, email):
-        print("sending standard response.")
+    def standard_resp(self, email_to):
+        print("sending standard resp.")
         email_subject = self.responses['deprecated']['subject']
         email_body = self.responses['deprecated']['body']
-        email_msg = f'Subject: {email_subject}\n\n{email_body}'
-        self.login(email, email_msg)
-        print(f'deprecated message sent to: {email}')
+        if self.send_message(self.create_message(email_to, email_subject, email_body)):
+            print(f'standard resp sent to: {email_to}')
 
     # Send New User Response
-    def new_user_resp(self, email):
+    def new_user_resp(self, email_to):
         print("sending NU resp.")
         email_subject = self.responses['introduction']['subject']
         email_body = self.responses['introduction']['body']
-        email_msg = f'Subject: {email_subject}\n\n{email_body}'
-        self.login(email, email_msg)
-        print(f'introduction message sent to: {email}')
-
-    def shutdown_confirmation(self, email):
+        if self.send_message(self.create_message(email_to, email_subject, email_body)):
+            print(f'intro resp sent to: {email_to}')
+    
+    # Send Shutdown Conf Resp
+    def shutdown_confirmation(self, email_to):
+        print("sending shutdown confirmation resp.")
         email_subject = self.responses['shutdown']['subject']
         email_body = self.responses['shutdown']['body']
-        email_msg = f'Subject: {email_subject}\n\n{email_body}'
-        self.login(email, email_msg)
-        print(f'message sent to: {email}')
-        return True
+        if self.send_message(self.create_message(email_to, email_subject, email_body)):
+            print(f'shutdown conf resp sent to: {email_to}')
     
-    def update_confirmation(self, email):
+    # Send Update Conf Resp
+    def update_confirmation(self, email_to):
+        print("sending update confirmation resp.")
         email_subject = self.responses['update']['subject']
         email_body = self.responses['update']['body']
-        email_msg = f'Subject: {email_subject}\n\n{email_body}'
-        self.login(email, email_msg)
-        print(f'message sent to: {email}')
-        return True
+        if self.send_message(self.create_message(email_to, email_subject, email_body)):
+            print(f'update conf resp sent to: {email_to}')

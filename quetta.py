@@ -1,13 +1,14 @@
 import time
 from datetime import datetime
 
-import quickstart
+from google_service import GoogleService
 
 from process_messages import ProcessMessages
 
 class Server:
     def __init__(self):
-        self.process_messages = ProcessMessages()
+        self.gs = GoogleService()
+        self.process_messages = ProcessMessages(self.gs)
         self.message_list = []
         self.update = True
         self.update_time = "21:30"
@@ -16,9 +17,9 @@ class Server:
     def runtime(self):
         if self.update_check() is False:
             if self.new_messages():
-                if self.process_messages.process(self.message_list):
-                    time.sleep(30)
-                    self.runtime()
+                self.process_messages.process(self.message_list)
+                time.sleep(30)
+                self.runtime()
             else:
                 print("no messages in the inbox")
                 time.sleep(30)
@@ -29,7 +30,7 @@ class Server:
     # check for new messages
     def new_messages(self):
         print("checking messages")
-        message_list = quickstart.main()
+        message_list = self.gs.get_messages()
         # check to see if message list isnt empty
         if message_list != []:
             self.message_list = message_list
