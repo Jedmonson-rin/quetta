@@ -46,7 +46,7 @@ class ProcessMessages:
             self.send_message.standard_resp(email_from)
         
 
-        def shutdown(self, email, body):
+        def shutdown(self):
             self.send_message.shutdown_confirmation(self.owner_email)
             print("closing db connection")
             self.database.close_connection()
