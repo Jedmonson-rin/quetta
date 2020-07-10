@@ -51,3 +51,11 @@ class SendMessages:
         self.login(email, email_msg)
         print(f'message sent to: {email}')
         return True
+    
+    def update_confirmation(self, email):
+        email_subject = self.responses['update']['subject']
+        email_body = self.responses['update']['body']
+        email_msg = f'Subject: {email_subject}\n\n{email_body}'
+        self.login(email, email_msg)
+        print(f'message sent to: {email}')
+        return True

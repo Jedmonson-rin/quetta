@@ -1,7 +1,9 @@
 import os
+from datetime import datetime
 
 from db_manage import DbManage
 from send_messages import SendMessages
+
 
 
 class ProcessMessages:
@@ -9,13 +11,13 @@ class ProcessMessages:
             self.database = DbManage()
             self.send_message = SendMessages()
             self.owner_email = os.environ.get('OWNER_EMAIL')
-            
+
         def process(self, message_list):
             for message in message_list:
                 if self.check_user(message['from']):
                     if self.new_message(message['from'], message['id']):
-                        if self.shutdown_check(message['from'], message['message']):
-                            exit()
+                        if message['from'] == self.owner_email:
+                            self.management(message['message'])
                         self.standard_message(message['from'])
                     return True
                 else:
@@ -43,10 +45,27 @@ class ProcessMessages:
             if self.database.new_message_id(email, message_id):
                 return True
 
-        def shutdown_check(self, email, body):
-            if email == self.owner_email and "shutdown" in body:
+        def shutdown(self, email, body):
                 print("sending shutdown confirmation")
                 self.send_message.shutdown_confirmation(self.owner_email)
                 print("closing db connection")
                 self.database.close_connection()
-                return True
+        
+        def update(self):
+            print("updating, sending shutdown confirmation")
+            self.send_message.update_confirmation(self.owner_email)
+            print("closing db connection")
+            self.database.close_connection()
+
+        def management(self, body):
+            if "shutdown" in body:
+                self.shutdown()
+                exit()
+            if "update" in body:
+                self.update()
+                os.system("python3 update.py")
+                exit()
+            else:
+                pass
+
+
