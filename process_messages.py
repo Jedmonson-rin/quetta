@@ -16,6 +16,8 @@ class ProcessMessages:
             for message in message_list:
                 if self.check_user(message['from']):
                     if self.new_message(message['from'], message['id']):
+                        user = message['from']
+                        print(f'new message from: {user}')
                         if message['from'] == self.owner_email:
                             self.management(message['message'])
                         self.standard_message(message['from'])
@@ -45,7 +47,6 @@ class ProcessMessages:
         def standard_message(self, email_from):
             self.send_message.standard_resp(email_from)
         
-
         def shutdown(self):
             self.send_message.shutdown_confirmation(self.owner_email)
             print("closing db connection")
