@@ -6,6 +6,8 @@ token.pickle
 .vscode/
 __pycache__/
 .pytest_cache
+idea.py
+.DS_Store
 
 #personal data
 quetta.db

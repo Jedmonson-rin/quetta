@@ -52,20 +52,26 @@ class ProcessMessages:
             print("closing db connection")
             self.database.close_connection()
         
-        def update(self):
-            self.send_message.update_confirmation(self.owner_email)
+        def update(self, status):
+            self.send_message.update_confirmation(self.owner_email, status)
             print("closing db connection")
             self.database.close_connection()
+            os.system("python3 update.py")
+            exit()
 
         def management(self, body):
             if "shutdown" in body:
                 self.shutdown()
                 exit()
             if "update" in body:
-                self.update()
+                self.update("manual")
                 os.system("python3 update.py")
                 exit()
             else:
                 pass
 
-
+        def feature_notification(self):
+            with open('feature_notification.txt', 'r') as f:
+                message = f.read()
+            for user in self.database.get_users():
+                self.send_message.feature_notification(user, message)

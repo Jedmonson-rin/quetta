@@ -55,9 +55,20 @@ class SendMessages:
             print(f'shutdown conf resp sent to: {email_to}')
     
     # Send Update Conf Resp
-    def update_confirmation(self, email_to):
+    def update_confirmation(self, email_to, status):
         print("sending update confirmation resp.")
-        email_subject = self.responses['update']['subject']
-        email_body = self.responses['update']['body']
+        if status == "manual":
+            email_subject = self.responses['manual_update']['subject']
+            email_body = self.responses['manual_update']['body']
+        if status == "automatic":
+            email_subject = self.responses['automatic_update']['subject']
+            email_body = self.responses['automatic_update']['body']
         if self.send_message(self.create_message(email_to, email_subject, email_body)):
             print(f'update conf resp sent to: {email_to}')
+
+    def feature_notification(self, email_to, message):
+        email_subject = self.responses['feature_notification']['subject']
+        email_body = message
+        if self.send_message(self.create_message(email_to, email_subject, email_body)):
+            print(f'feature notification sent to: {email_to}')
+        
