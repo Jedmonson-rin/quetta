@@ -14,8 +14,8 @@ class Server:
         self.update_time = "21:30"
 
     # server entry point
-    def runtime(self):
-        if self.update_check() is False:
+    def runtime(self, update_notification):
+        if self.update_check(update_notification) is False:
             if self.new_messages():
                 self.process_messages.process(self.message_list)
                 time.sleep(30)
@@ -36,9 +36,9 @@ class Server:
             self.message_list = message_list
             return True
 
-    def update_check(self):
+    def update_check(self, update_notification):
         if self.update == True and datetime.now().strftime("%H:%M") == self.update_time:
-            self.process_messages.update()
+            self.process_messages.update("automatic")
         else:
             return False
 

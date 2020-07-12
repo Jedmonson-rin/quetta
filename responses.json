@@ -11,8 +11,12 @@
         "subject":"[Quetta-Automated] Shutdown",
         "body": "Shutdown command received."
     },
-    "update":{
-        "subject": "[Quetta-Automated] Updating",
-        "body": "Update command received."
+    "manual_update":{
+        "subject": "[Quetta-Automated] Manual_Update",
+        "body": "Manual update command received."
+    },
+    "automatic_update":{
+        "subject": "[Quetta-Automated] Automatic_Update",
+        "body": "Automatic update command received."
     }
 }
