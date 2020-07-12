@@ -31,7 +31,7 @@ class Server:
 
     # check for new messages
     def new_messages(self):
-        print("checking messages")
+        print(datetime.now().strftime("%H:%M"), "checking messages")
         message_list = self.gs.get_messages()
         # check to see if message list isnt empty
         if message_list != []:
