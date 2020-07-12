@@ -65,3 +65,10 @@ class SendMessages:
             email_body = self.responses['automatic_update']['body']
         if self.send_message(self.create_message(email_to, email_subject, email_body)):
             print(f'update conf resp sent to: {email_to}')
+
+    def feature_notification(self, email_to, message):
+        email_subject = self.responses['feature_notification']['subject']
+        email_body = message
+        if self.send_message(self.create_message(email_to, email_subject, email_body)):
+            print(f'feature notification sent to: {email_to}')
+        

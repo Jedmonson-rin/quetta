@@ -70,4 +70,8 @@ class ProcessMessages:
             else:
                 pass
 
-
+        def feature_notification(self):
+            with open('feature_notification.txt', 'r') as f:
+                message = f.read()
+            for user in self.database.get_users():
+                self.send_message.feature_notification(user, message)
